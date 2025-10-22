@@ -1,5 +1,6 @@
 services:
   openssl:
+    platform: linux/arm64
     image: cyberark/conjur
     container_name: openssl
     entrypoint:
@@ -23,15 +24,19 @@ services:
      - ./conf/tls/:/tmp/conf:z
 
   bot_app:
-    image: cfmanteiga/alpine-bash-curl-jq
+    platform: linux/arm64
+   # image: alpine:latest
     privileged: true
     container_name: bot_app
+    build:
+      dockerfile: bot_app.dockerfile
     command: tail -F anything
     volumes:
     - ./program.sh:/tmp/program.sh
     restart: on-failure
 
   database:
+    platform: linux/arm64
     image: postgres:15
     container_name: postgres_database
     environment:
@@ -41,6 +46,7 @@ services:
       - "8432:5432"
 
   pgadmin:
+    platform: linux/arm64
 #    https://www.pgadmin.org/docs/pgadmin4/latest/container_deployment.html
     image: dpage/pgadmin4
     environment:
@@ -50,6 +56,7 @@ services:
       - "8081:80"
 
   conjur:
+    platform: linux/arm64
     image: cyberark/conjur
     container_name: conjur_server
     command: server
@@ -71,6 +78,7 @@ services:
       - "8080:80"
 
   proxy:
+    platform: linux/arm64
     image: nginx:latest
     container_name: nginx_proxy
     ports:
@@ -84,7 +92,10 @@ services:
     restart: on-failure
 
   client:
-    image: cyberark/conjur-cli:8
+    platform: linux/arm64
+    # image: cyberark/conjur:1.21.1-arm64
+    build:
+      dockerfile: conjur-cli.dockerfile
     container_name: conjur_client
     depends_on: [ proxy ]
     entrypoint: sleep
