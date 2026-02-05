@@ -101,4 +101,4 @@ services:
     entrypoint: sleep
     command: infinity
     volumes:
-    - ./conf/policy:/policy
+    - ./conf/policy:/root/policy:ro
